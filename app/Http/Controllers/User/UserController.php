@@ -73,4 +73,13 @@ class UserController extends Controller
     {
         //
     }
+
+    public  function login(Request $request)
+    {
+        $this->user_repository->checkLoginConditions($request);
+        $this->user_repository->login();
+        return $this->user_repository->response;
+    }
+
+
 }
