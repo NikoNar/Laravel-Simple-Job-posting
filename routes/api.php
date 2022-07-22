@@ -14,6 +14,8 @@ use App\Http\Controllers\User\UserController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
 Route::controller(UserController::class)->group(function(){
     Route::post('/user','store');
 });
