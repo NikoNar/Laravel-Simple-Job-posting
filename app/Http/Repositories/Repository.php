@@ -14,9 +14,8 @@ class Repository
 {
     public JsonResponse $response;
     public object $user;
-    public object $project;
     public int $row_limit;
-    public object $media;
+
 
     public function __construct()
     {
