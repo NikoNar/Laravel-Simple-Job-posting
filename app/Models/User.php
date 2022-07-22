@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Traits\TraitUuid;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -25,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,4 +46,44 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function getToken()
+    {
+        return request()->user()->currentAccessToken()->token;
+    }
+
+    public static function getUserIdByToken($token)
+    {
+        $user_token = DB::table('personal_access_tokens')
+                        ->select('tokenable_id')
+                        ->where([
+                            ['tokenable_type',User::class],
+                            ['token',$token]
+                        ])
+                        ->first();
+
+        if(!empty($user_token->tokenable_id)) {
+            return $user_token->tokenable_id;
+        }
+
+        return null;
+    }
+
+    public static function getUser(): User
+    {
+        $token = self::getToken();
+        $user_id = self::getUserIdByToken($token);
+        return self::find($user_id);
+    }
+
+    public static function getUserId()
+    {
+        return self::getUserIdByToken(self::getToken());
+    }
+
+    public static function getUserById($id)
+    {
+        return User::find($id);
+    }
+
 }
