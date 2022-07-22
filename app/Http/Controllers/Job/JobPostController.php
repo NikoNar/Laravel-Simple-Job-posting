@@ -18,6 +18,7 @@ class JobPostController extends Controller
 
     public function store(StoreJobVacancy $request)
     {
+        $this->job_post_repository->checkStoreCondition();
         $this->job_post_repository->storeJob($request);
         return $this->job_post_repository->response;
     }
