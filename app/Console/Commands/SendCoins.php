@@ -29,10 +29,17 @@ class SendCoins extends Command
     public function handle()
     {
         define('COINS',(int)env('DAILY_COINS_AMOUNT'));
+        define('MAX_COINS',(int)env('MAX_COINS_CAN_HAVE'));
         User::chunk(200,function($users){
             foreach ($users as $user){
-                $user->coins += COINS;
+                if(($user->coins + COINS) >= 5){
+                    $user->coins = MAX_COINS;
+                }else{
+                    $user->coins += COINS;
+                }
+
                 $user->save();
+
             }
         });
         return 0;
