@@ -29,4 +29,11 @@ class LikeController extends Controller
         $this->like_repository->likeJobPost($jobPost);
         return $this->like_repository->response;
     }
+
+    public function getCount($object_id)
+    {
+        $this->like_repository->checkGetCountCondition($object_id);
+        $this->like_repository->getCount($object_id);
+        return $this->like_repository->response;
+    }
 }

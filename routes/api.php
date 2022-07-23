@@ -21,6 +21,7 @@ use App\Http\Controllers\Like\LikeController;
 Route::controller(UserController::class)->group(function(){
     Route::post('/user','store');
     Route::post('/user-login','login');
+    Route::get('/like-count/{object_id}',[LikeController::class,'getCount']);
 });
 
 //end public routes

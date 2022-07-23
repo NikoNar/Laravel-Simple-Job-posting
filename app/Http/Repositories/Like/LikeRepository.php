@@ -93,4 +93,24 @@ class LikeRepository extends Repository
         }
 
     }
+
+    public function checkGetCountCondition($object_id)
+    {
+        if(!$this->is_valid_uuid($object_id)){
+            return ;
+        }
+    }
+
+    public function getCount($object_id)
+    {
+        if($this->failure()) {
+            return ;
+        }
+
+        $this->response = JsonResponse::Fetched(
+            ['count' => Like::where('likeable_id',$object_id)->count()]
+        );
+
+    }
+
 }

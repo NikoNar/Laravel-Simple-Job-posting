@@ -37,22 +37,23 @@ class JobPostRepository extends Repository
 
     public function storeJob($request)
     {
-        if(!$this->failure()){
+        if(!$this->failure()) {
+            return ;
+        }
 
-            $fields_to_store = $request->validated();
-            $fields_to_store['created_by'] = $this->user->id;
+        $fields_to_store = $request->validated();
+        $fields_to_store['created_by'] = $this->user->id;
 
-            if($jobPost = JobPost::create($fields_to_store)){
+        if($jobPost = JobPost::create($fields_to_store)){
 
-                $amount = $this->user->getCoinsAmount();
-                $this->user->setCoinsAmount($amount-=2);
-                $this->response = JsonResponse::Created($jobPost);
-
-            }
-            else{
-                $this->response = JsonResponse::NotCreated();
-            }
+            $amount = $this->user->getCoinsAmount();
+            $this->user->setCoinsAmount($amount-=2);
+            $this->response = JsonResponse::Created($jobPost);
 
         }
+        else{
+            $this->response = JsonResponse::NotCreated();
+        }
+
     }
 }
