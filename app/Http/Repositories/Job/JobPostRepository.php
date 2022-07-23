@@ -63,16 +63,45 @@ class JobPostRepository extends Repository
     {
         $job_posts = new JobPost();
 
+        $filterByDate = function ($request,&$job_posts){
+            $from = null;
+            if($request->creation_date == "day"){
+                $from = Carbon::now()->subDay();
+            }elseif($request->creation_date == "week"){
+                $from = Carbon::now()->subWeek();
+            }else{
+                $from = Carbon::now()->subMonth();
+            }
+
+            $job_posts = $job_posts->whereBetween('created_at', [
+                $from, Carbon::now()
+            ]);
+
+        };
 
         if(
             isset($request->responses_count)
             && in_array($request->responses_count,["ASC","DESC"])
         ){
-            $job_posts =  $job_posts->withCount('responses')
-                                    ->orderBy('responses_count', $request->responses_count);
-        }else{
-            $job_posts = $job_posts->orderBy('created_at','DESC');
+            $job_posts =  $job_posts->withCount('responses');
+            if(
+                isset($request->creation_date)
+                && in_array($request->creation_date,["day","week","month"])
+              ){
+                $filterByDate($request,$job_posts);
+            }
+
+            $job_posts = $job_posts->orderBy('responses_count', $request->responses_count);
+        }elseif(
+            isset($request->creation_date)
+            && in_array($request->creation_date,["day","week","month"])
+        ){
+            $filterByDate($request,$job_posts);
         }
+
+        dd($job_posts->get());
+
+
 
         $this->response = JsonResponse::Fetched(
             $job_posts->paginate(100)

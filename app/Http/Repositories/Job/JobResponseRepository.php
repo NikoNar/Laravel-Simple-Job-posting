@@ -46,14 +46,13 @@ class JobResponseRepository extends Repository
             'sent_by' => $this->user->id
         ]);
 
-        //uncomment
-//        if($jobResponse->count() != 0){
-//
-//            return $this->response = JsonResponse::Failure(
-//                409,
-//                "You can't send response to this job second time"
-//            );
-//        }
+        if($jobResponse->count() != 0){
+
+            return $this->response = JsonResponse::Failure(
+                409,
+                "You can't send response to this job second time"
+            );
+        }
 
         $this->job_post = $job_post;
 
