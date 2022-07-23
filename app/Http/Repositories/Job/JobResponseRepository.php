@@ -20,6 +20,16 @@ class JobResponseRepository extends Repository
                 409,
                 "You can't send response to job posts created by you");
 
+        $jobResponse = JobResponse::where([
+            'post_id' => $request->post_id,
+            'sent_by' => $this->user->id
+        ]);
+
+        if($jobResponse->count() != 0)
+            return $this->response = JsonResponse::Failure(
+                409,
+                "You can't send response to this job second time");
+
 
     }
 
