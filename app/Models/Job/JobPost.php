@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Job;
 
 use App\Traits\TraitUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

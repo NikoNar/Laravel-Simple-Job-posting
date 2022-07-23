@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Job\JobPostController;
+use App\Http\Controllers\Job\JobResponseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,11 +22,12 @@ Route::controller(UserController::class)->group(function(){
     Route::post('/user','store');
     Route::post('/user-login','login');
 });
+
 //end public routes
 
 //protected routes
-
 Route::group(['middleware' => ['auth:sanctum'] ],function() {
+    Route::post('/job-response',[JobResponseController::class,'store']);
     Route::post('job-vacancy',[JobPostController::class,'store']);
 });
 
