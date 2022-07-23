@@ -7,9 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class JobResponse extends Notification
+class JobResponse extends Notification implements ShouldQueue
 {
-//    use Queueable;
+    use Queueable;
 
     private array $data_to_send;
 
@@ -22,6 +22,7 @@ class JobResponse extends Notification
     {
         $this->data_to_send = $data_to_send;
     }
+
 
     /**
      * Get the notification's delivery channels.

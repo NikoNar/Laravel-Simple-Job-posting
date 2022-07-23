@@ -14,6 +14,13 @@ class JobPost extends Model
     protected $fillable = [
         'title',
         'description',
-        'created_by'
+        'created_by',
+        ''
+    ];
+
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'notified_at'
     ];
 }

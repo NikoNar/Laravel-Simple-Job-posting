@@ -7,6 +7,8 @@ use App\Http\Repositories\Repository;
 use App\Models\Job\JobPost;
 use App\Models\Job\JobResponse;
 use App\Models\User;
+use Carbon\Carbon;
+
 
 class JobResponseRepository extends Repository
 {
@@ -75,7 +77,13 @@ class JobResponseRepository extends Repository
             //get post creator to send notification
             $post_creator = User::find($this->job_post->created_by);
 
+
             //sending notification
+            $delay = now();
+            if($this->job_post->notified_at->diffInMinutes() < 60){
+                $delay = now()->addMinutes(60);
+            }
+
             $post_creator->notify(
                 new \App\Notifications\JobResponse([
                     'job_vacancy' => $this->job_post,
@@ -83,7 +91,7 @@ class JobResponseRepository extends Repository
                     'responses_count_to_post' => $count_of_responses,
                     'sent_date' => $job->created_at
                 ])
-            );
+            )->delay($delay);
 
 
             $this->response = JsonResponse::Created($job);
