@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->uuid('created_by');
+            $table->timestamp('notified_at')->default(\Illuminate\Support\Carbon::now());
             $table->softDeletes();
             $table->timestamps();
         });
