@@ -64,4 +64,11 @@ class UserRepository extends Repository
 
     }
 
+    public function getUsers()
+    {
+        $this->response = JsonResponse::Fetched(
+            User::orderBy('created_at','DESC')->paginate(100)
+        );
+    }
+
 }

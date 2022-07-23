@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Repositories\User\UserRepository as UserRepository;
 use App\Http\Requests\User\Store;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -24,7 +26,8 @@ class UserController extends Controller
 
     public function index()
     {
-        //
+        $this->user_repository->getUsers();
+        return $this->user_repository->response;
     }
 
     /**
@@ -46,9 +49,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        return $this->user_repository->response = JsonResponse::Fetched($user);
     }
 
     /**

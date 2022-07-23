@@ -25,19 +25,27 @@ Route::controller(UserController::class)->group(function(){
 
 Route::get('/like-count/{object_id}',[LikeController::class,'getCount']);
 Route::get('/job-vacancy',[JobPostController::class,'index']);
+Route::get('/job-vacancy/{id}',[JobPostController::class,'show']);
 
 //end public routes
 
 //protected routes
 Route::group(['middleware' => ['auth:sanctum'] ],function() {
+
+    Route::get('/user',[UserController::class,'index']);
+    Route::get('/user/{user}',[UserController::class,'show']);
+
     Route::post('/job-response',[JobResponseController::class,'store']);
-    Route::post('/job-vacancy',[JobPostController::class,'store']);
+    Route::delete('/job-response/{response}',[JobResponseController::class,'delete']);
+
     Route::post('/like-user/{user}',[LikeController::class,'likeUser']);
     Route::post('/like-job/{jobPost}',[LikeController::class,'likeJob']);
+
+    Route::post('/job-vacancy',[JobPostController::class,'store']);
+    Route::put('/job-vacancy/{post}',[JobPostController::class,'update']);
+    Route::delete('/job-vacancy/{post}',[JobPostController::class,'delete']);
+    Route::delete('/job-vacancy/force/{id}',[JobPostController::class,'forceDelete']);
 });
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 //end protected routes

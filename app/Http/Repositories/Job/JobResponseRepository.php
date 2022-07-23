@@ -83,6 +83,8 @@ class JobResponseRepository extends Repository
             if($this->job_post->notified_at->diffInMinutes() < 60){
                 $delay = now()->addMinutes(60);
             }
+            try {
+
 
             $post_creator->notify(
                 new \App\Notifications\JobResponse([
@@ -92,7 +94,7 @@ class JobResponseRepository extends Repository
                     'sent_date' => $job->created_at
                 ])
             )->delay($delay);
-
+            }catch (\Exception $ex){}
 
             $this->response = JsonResponse::Created($job);
 
@@ -100,6 +102,25 @@ class JobResponseRepository extends Repository
             $this->response = JsonResponse::NotCreated();
         }
 
+    }
+
+    public function checkDeleteCondition($response)
+    {
+        $this->user = User::getUser();
+
+        if(!$response->doesUserCreator($this->user->id)){
+            $this->response = JsonResponse::NoAccess();
+        }
 
     }
+
+    public function delete($response)
+    {
+        if($this->failure()){
+            return ;
+        }
+        $response->delete();
+        $this->response = JsonResponse::Deleted();
+    }
+
 }

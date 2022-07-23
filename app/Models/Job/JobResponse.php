@@ -15,4 +15,12 @@ class JobResponse extends Model
         'sent_by',
         'description'
     ];
+
+    public function doesUserCreator($user_id)
+    {
+        if($this->sent_by == $user_id){
+            return true;
+        }
+        return false;
+    }
 }

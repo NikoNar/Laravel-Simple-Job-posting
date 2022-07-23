@@ -28,4 +28,12 @@ class JobPost extends Model
     {
         return $this->hasMany(JobResponse::class,'post_id','id');
     }
+
+    public function doesUserCreator($user_id)
+    {
+        if($this->created_by == $user_id){
+            return true;
+        }
+        return false;
+    }
 }

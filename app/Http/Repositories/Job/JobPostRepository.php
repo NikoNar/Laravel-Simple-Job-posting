@@ -2,6 +2,7 @@
 
 namespace App\Http\Repositories\Job;
 
+use App\Helpers\GlobalMethods;
 use App\Helpers\JsonResponse;
 use App\Http\Repositories\Repository;
 use App\Models\Job\JobPost;
@@ -69,11 +70,62 @@ class JobPostRepository extends Repository
         ){
             $job_posts =  $job_posts->withCount('responses')
                                     ->orderBy('responses_count', $request->responses_count);
+        }else{
+            $job_posts = $job_posts->orderBy('created_at','DESC');
         }
-        $job_posts = $job_posts->paginate(100);
 
         $this->response = JsonResponse::Fetched(
-            $job_posts
+            $job_posts->paginate(100)
         );
     }
+
+    public function checkUpdateCondition($request,JobPost $post)
+    {
+        $this->user = User::getUser();
+        if(!$post->doesUserCreator($this->user->id)){
+            return $this->response = JsonResponse::NoAccess();
+        }
+    }
+
+    public function updateJobPost($request,JobPost $post)
+    {
+        if($this->failure())
+            return ;
+
+        $post->update($request->validated());
+        $this->response = JsonResponse::Updated($post);
+    }
+
+    public function checkDeleteCondition(JobPost $post)
+    {
+        $this->user = User::getUser();
+        if(!$post->doesUserCreator($this->user->id)){
+            return $this->response = JsonResponse::NoAccess();
+        }
+    }
+
+    public function deleteJobPost($post)
+    {
+        if($this->failure())
+            return ;
+
+        if($post->delete()){
+            $this->response = JsonResponse::Deleted();
+        }else{
+            $this->response = JsonResponse::NotDeleted();
+        }
+
+    }
+
+    public function checkForceDeleteCondition($post_id)
+    {
+        $this->is_valid_uuid($post_id);
+        if($this->failure())
+            return ;
+
+        if(empty(JobPost::withTrashed()->where('id',$post_id)->first())){
+            $this->response = JsonResponse::NoResult();
+        }
+    }
+
 }
