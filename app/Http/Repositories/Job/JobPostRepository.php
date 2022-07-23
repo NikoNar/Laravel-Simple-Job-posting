@@ -7,6 +7,7 @@ use App\Http\Repositories\Repository;
 use App\Models\Job\JobPost;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class JobPostRepository extends Repository
 {
@@ -55,5 +56,12 @@ class JobPostRepository extends Repository
             $this->response = JsonResponse::NotCreated();
         }
 
+    }
+
+    public function fetchList()
+    {
+        $this->response = JsonResponse::Fetched(
+            JobPost::orderBy('created_at')->paginate(100)
+        );
     }
 }

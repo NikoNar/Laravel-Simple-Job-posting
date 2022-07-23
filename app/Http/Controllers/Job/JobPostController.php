@@ -16,6 +16,13 @@ class JobPostController extends Controller
         $this->job_post_repository = new JobPostRepository();
     }
 
+
+    public function index()
+    {
+        $this->job_post_repository->fetchList();
+        return $this->job_post_repository->response;
+    }
+
     public function store(StoreJobVacancy $request)
     {
         $this->job_post_repository->checkStoreCondition();
