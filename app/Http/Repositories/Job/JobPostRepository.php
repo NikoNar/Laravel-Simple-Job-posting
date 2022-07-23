@@ -4,7 +4,7 @@ namespace App\Http\Repositories\Job;
 
 use App\Helpers\JsonResponse;
 use App\Http\Repositories\Repository;
-use App\Models\JobPost;
+use App\Models\Job\JobPost;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 
