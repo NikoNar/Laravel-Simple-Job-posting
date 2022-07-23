@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Job\JobPostController;
 use App\Http\Controllers\Job\JobResponseController;
-
+use App\Http\Controllers\Like\LikeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,6 +21,7 @@ use App\Http\Controllers\Job\JobResponseController;
 Route::controller(UserController::class)->group(function(){
     Route::post('/user','store');
     Route::post('/user-login','login');
+    Route::get('/like-count/{object_id}',[LikeController::class,'getCount']);
 });
 
 //end public routes
@@ -28,7 +29,9 @@ Route::controller(UserController::class)->group(function(){
 //protected routes
 Route::group(['middleware' => ['auth:sanctum'] ],function() {
     Route::post('/job-response',[JobResponseController::class,'store']);
-    Route::post('job-vacancy',[JobPostController::class,'store']);
+    Route::post('/job-vacancy',[JobPostController::class,'store']);
+    Route::post('/like-user/{user}',[LikeController::class,'likeUser']);
+    Route::post('/like-job/{jobPost}',[LikeController::class,'likeJob']);
 });
 
 

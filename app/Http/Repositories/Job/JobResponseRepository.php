@@ -50,20 +50,23 @@ class JobResponseRepository extends Repository
 
     public function storeJobResponse($request)
     {
-        if(!$this->failure()){
-            $fields_to_store = $request->validated();
-            $fields_to_store['sent_by'] = $this->user->id;
-
-            if($job = JobResponse::create($fields_to_store)){
-
-                $amount = $this->user->getCoinsAmount();
-                $this->user->setCoinsAmount(--$amount);
-                $this->response = JsonResponse::Created($job);
-
-            } else{
-                $this->response = JsonResponse::NotCreated();
-            }
-
+        if(!$this->failure()) {
+            return ;
         }
+
+        $fields_to_store = $request->validated();
+        $fields_to_store['sent_by'] = $this->user->id;
+
+        if($job = JobResponse::create($fields_to_store)){
+
+            $amount = $this->user->getCoinsAmount();
+            $this->user->setCoinsAmount(--$amount);
+            $this->response = JsonResponse::Created($job);
+
+        } else{
+            $this->response = JsonResponse::NotCreated();
+        }
+
+
     }
 }
