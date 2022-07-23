@@ -14,11 +14,12 @@ class JobPostRepository extends Repository
     {
         $this->user = User::getUser();
 
-        if($this->user->getCoinsAmount() < 2)
+        if($this->user->getCoinsAmount() < 2){
             return $this->response = JsonResponse::Failure(
                 422,
                 "You don't have enough coins to post a job vacancy."
             );
+        }
 
         $job_posts = JobPost::where([
             ['created_by',$this->user->id],
@@ -31,8 +32,6 @@ class JobPostRepository extends Repository
                 "You can't post a job vacancy more than two times in 24 hours"
             );
         }
-
-
 
     }
 
@@ -48,6 +47,7 @@ class JobPostRepository extends Repository
                 $amount = $this->user->getCoinsAmount();
                 $this->user->setCoinsAmount($amount-=2);
                 $this->response = JsonResponse::Created($jobPost);
+
             }
             else{
                 $this->response = JsonResponse::NotCreated();
