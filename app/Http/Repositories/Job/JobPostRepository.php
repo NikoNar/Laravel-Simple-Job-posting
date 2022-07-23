@@ -37,7 +37,7 @@ class JobPostRepository extends Repository
 
     public function storeJob($request)
     {
-        if(!$this->failure()) {
+        if($this->failure()) {
             return ;
         }
 

@@ -10,6 +10,13 @@ use App\Models\User;
 
 class JobResponseRepository extends Repository
 {
+    private JobPost $job_post;
+
+    public function __construct()
+    {
+        $this->job_post = new JobPost();
+    }
+
     public function checkStoreResponseCondition($request)
     {
         $this->user = User::getUser();
@@ -38,19 +45,20 @@ class JobResponseRepository extends Repository
         ]);
 
         if($jobResponse->count() != 0){
+
             return $this->response = JsonResponse::Failure(
                 409,
                 "You can't send response to this job second time"
             );
         }
 
-
+        $this->job_post = $job_post;
 
     }
 
     public function storeJobResponse($request)
     {
-        if(!$this->failure()) {
+        if($this->failure()) {
             return ;
         }
 
@@ -61,6 +69,23 @@ class JobResponseRepository extends Repository
 
             $amount = $this->user->getCoinsAmount();
             $this->user->setCoinsAmount(--$amount);
+            $count_of_responses = JobResponse::where('post_id',$request->post_id)
+                                             ->count();
+
+            //get post creator to send notification
+            $post_creator = User::find($this->job_post->created_by);
+
+            //sending notification
+            $post_creator->notify(
+                new \App\Notifications\JobResponse([
+                    'job_vacancy' => $this->job_post,
+                    'user' => $this->user,
+                    'responses_count_to_post' => $count_of_responses,
+                    'sent_date' => $job->created_at
+                ])
+            );
+
+
             $this->response = JsonResponse::Created($job);
 
         } else{
