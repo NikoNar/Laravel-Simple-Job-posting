@@ -46,13 +46,14 @@ class JobResponseRepository extends Repository
             'sent_by' => $this->user->id
         ]);
 
-        if($jobResponse->count() != 0){
-
-            return $this->response = JsonResponse::Failure(
-                409,
-                "You can't send response to this job second time"
-            );
-        }
+        //uncomment
+//        if($jobResponse->count() != 0){
+//
+//            return $this->response = JsonResponse::Failure(
+//                409,
+//                "You can't send response to this job second time"
+//            );
+//        }
 
         $this->job_post = $job_post;
 
@@ -71,36 +72,45 @@ class JobResponseRepository extends Repository
 
             $amount = $this->user->getCoinsAmount();
             $this->user->setCoinsAmount(--$amount);
-            $count_of_responses = JobResponse::where('post_id',$request->post_id)
-                                             ->count();
-
-            //get post creator to send notification
-            $post_creator = User::find($this->job_post->created_by);
-
 
             //sending notification
-            $delay = now();
-            if($this->job_post->notified_at->diffInMinutes() < 60){
-                $delay = now()->addMinutes(60);
-            }
-            try {
-
-
-            $post_creator->notify(
-                new \App\Notifications\JobResponse([
-                    'job_vacancy' => $this->job_post,
-                    'user' => $this->user,
-                    'responses_count_to_post' => $count_of_responses,
-                    'sent_date' => $job->created_at
-                ])
-            )->delay($delay);
-            }catch (\Exception $ex){}
-
+            $this->sendNotification($request,$job);
             $this->response = JsonResponse::Created($job);
 
         } else{
             $this->response = JsonResponse::NotCreated();
         }
+
+    }
+
+    private function sendNotification(&$request,&$job)
+    {
+        $count_of_responses = JobResponse::where('post_id',$request->post_id)
+                                         ->count();
+
+        //get post creator to send notification
+        $delay = 0;
+        $post_creator = User::find($this->job_post->created_by);
+        $left_from = $this->job_post->notified_at->diffInMinutes();
+
+        if($this->job_post->notified_at > Carbon::now()){
+            $delay = $left_from += 60;
+        }
+
+        $this->job_post->notified_at = $this->job_post->notified_at->addMinutes(60)->toDateTimeString();
+        $this->job_post->save();
+
+        $post_creator->notify(
+            new \App\Notifications\JobResponse(
+                [
+                    'job_vacancy' => $this->job_post,
+                    'user' => $this->user,
+                    'responses_count_to_post' => $count_of_responses,
+                    'sent_date' => $job->created_at
+                ],
+                $delay
+            )
+        );
 
     }
 

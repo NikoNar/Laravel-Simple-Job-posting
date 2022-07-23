@@ -15,7 +15,7 @@ class JobPost extends Model
         'title',
         'description',
         'created_by',
-        ''
+        'notified_at'
     ];
 
     protected $dates = [

@@ -12,15 +12,24 @@ class JobResponse extends Notification implements ShouldQueue
     use Queueable;
 
     private array $data_to_send;
+    private int $send_delay;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($data_to_send)
+    public function __construct($data_to_send,$send_delay = 0)
     {
         $this->data_to_send = $data_to_send;
+        $this->send_delay = $send_delay;
+    }
+
+    public function withDelay($notifiable)
+    {
+        return [
+            'mail' => now()->addMinutes($this->send_delay),
+        ];
     }
 
 
