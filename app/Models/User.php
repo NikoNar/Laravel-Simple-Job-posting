@@ -86,4 +86,15 @@ class User extends Authenticatable
         return User::find($id);
     }
 
+    public function getCoinsAmount()
+    {
+        return (int)$this->coins;
+    }
+
+    public function setCoinsAmount($new_amount)
+    {
+        $this->coins = $new_amount;
+        $this->save();
+    }
+
 }
