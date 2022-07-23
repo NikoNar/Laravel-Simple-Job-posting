@@ -23,4 +23,9 @@ class JobPost extends Model
         'updated_at',
         'notified_at'
     ];
+
+    public function responses()
+    {
+        return $this->hasMany(JobResponse::class,'post_id','id');
+    }
 }

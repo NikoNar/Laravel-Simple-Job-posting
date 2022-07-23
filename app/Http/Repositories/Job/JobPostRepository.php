@@ -58,10 +58,22 @@ class JobPostRepository extends Repository
 
     }
 
-    public function fetchList()
+    public function fetchList($request)
     {
+        $job_posts = new JobPost();
+
+
+        if(
+            isset($request->responses_count)
+            && in_array($request->responses_count,["ASC","DESC"])
+        ){
+            $job_posts =  $job_posts->withCount('responses')
+                                    ->orderBy('responses_count', $request->responses_count);
+        }
+        $job_posts = $job_posts->paginate(100);
+
         $this->response = JsonResponse::Fetched(
-            JobPost::orderBy('created_at')->paginate(100)
+            $job_posts
         );
     }
 }

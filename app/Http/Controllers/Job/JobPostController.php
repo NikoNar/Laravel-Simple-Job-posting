@@ -17,9 +17,9 @@ class JobPostController extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $this->job_post_repository->fetchList();
+        $this->job_post_repository->fetchList($request);
         return $this->job_post_repository->response;
     }
 
