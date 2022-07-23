@@ -45,8 +45,9 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
+
         $this->renderable(function (NotFoundHttpException $e) {
-            return JsonResponse::Failure(404,'Page not found.');
+            return JsonResponse::Failure(404,'Resource not found.');
         });
     }
 }
