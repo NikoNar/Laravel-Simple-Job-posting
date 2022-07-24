@@ -30,7 +30,7 @@ class TransactionService
     public function add_coins(&$user,$amount)
     {
         $max_coins = (int)env('MAX_COINS_CAN_HAVE');
-        if(($user->coins + $amount) >= 5){
+        if(($user->coins + $amount) >= $max_coins){
             $user->coins = $max_coins;
         }else{
             $user->coins += $amount;
@@ -42,7 +42,7 @@ class TransactionService
     {
         $coins = (int)env('DAILY_COINS_AMOUNT');
         $max_coins = (int)env('MAX_COINS_CAN_HAVE');
-        if(($user->coins + $coins) >= 5){
+        if(($user->coins + $coins) >= $max_coins){
             $user->coins = $max_coins;
         }else{
             $user->coins += $coins;

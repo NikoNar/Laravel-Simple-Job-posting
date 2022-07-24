@@ -32,7 +32,7 @@ class SendCoins extends Command
         define('MAX_COINS',(int)env('MAX_COINS_CAN_HAVE'));
         User::chunk(200,function($users){
             foreach ($users as $user){
-                if(($user->coins + COINS) >= 5){
+                if(($user->coins + COINS) >= MAX_COINS){
                     $user->coins = MAX_COINS;
                 }else{
                     $user->coins += COINS;
