@@ -62,3 +62,14 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Setup
+
+Use env.example to initial config of .env for testing you can use .env.testing  
+use **[ php artisan test --env=testing ]** command to run test  
+use **[ php artisan command:send:coins ]** command to send coins this command need to be kept running in server  
+use **[ php artisan queue:work ]** for some cases ex. to recive coins or sending notifications  
+**[ MAX_COINS_CAN_HAVE ]** & ** [ DAILY_COINS_AMOUNT ] modifiable in .envs  
+all endpoints for interacting with api will atached to project  
+**[ /api/job-vacancy ]** can get 2 parameters `responses_count` with `DESC` or `ASC` and `creation_date` with one of this parameters `day` `week` `month`  
+
