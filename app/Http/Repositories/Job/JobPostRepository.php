@@ -7,6 +7,7 @@ use App\Helpers\JsonResponse;
 use App\Http\Repositories\Repository;
 use App\Models\Job\JobPost;
 use App\Models\User;
+use Faker\Factory;
 use Illuminate\Support\Carbon;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
